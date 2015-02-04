@@ -34,8 +34,10 @@ import veritrans.co.id.mobile.sdk.helper.VTConstants;
 import veritrans.co.id.mobile.sdk.helper.VTLogger;
 import veritrans.co.id.mobile.sdk.interfaces.IActionCallback;
 import veritrans.co.id.mobile.sdk.request.VTChargeRequest;
+import veritrans.co.id.mobile.sdk.request.VTConfirmTransactionRequest;
 import veritrans.co.id.mobile.sdk.request.VTTokenRequest;
 import veritrans.co.id.mobile.sdk.response.VTChargeResponse;
+import veritrans.co.id.mobile.sdk.response.VTConfirmTransactionResponse;
 import veritrans.co.id.mobile.sdk.response.VTTokenResponse;
 import veritrans.co.id.mobile.sdk.vtexceptions.VTMobileException;
 
@@ -215,6 +217,20 @@ public class FragmentCheckout extends Fragment implements View.OnClickListener {
                             chargeDialog.dismiss();
                         }
                         Toast.makeText(getActivity(),"Success to Charge with Transaction Id: "+vtChargeResponse.getTransaction_id(),Toast.LENGTH_LONG).show();
+                        //confirm transaction
+                        final VTConfirmTransactionRequest request = new VTConfirmTransactionRequest();
+                        request.setTransactionId(vtChargeResponse.getTransaction_id());
+                        VTMobile.confirmTransaction(new IActionCallback<VTConfirmTransactionResponse, VTMobileException>() {
+                            @Override
+                            public void onSuccess(VTConfirmTransactionResponse vtConfirmTransactionResponse) {
+                                Toast.makeText(getActivity(),"Success to Confirm Transaction Id: "+request.getTransactionId(),Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onError(VTMobileException e) {
+                                Toast.makeText(getActivity(),"failed to confirm with Transaction Id: "+request.getTransactionId(),Toast.LENGTH_LONG).show();
+                            }
+                        },request);
                     }
 
                     @Override
